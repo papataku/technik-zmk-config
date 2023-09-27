@@ -9,136 +9,304 @@
 #include <dt-bindings/zmk/bt.h>
 #include <dt-bindings/zmk/outputs.h>
 
-#define QWERTY_BASE 1
-
-#define TBLE_ORTHO   1
-// #define TBLE_MIT     1
-// #define TBLE_DUAL_2U 1
-
-#define NAV_L 1
-#define NUM_L 2
-#define SYM_L 3
-
-// Using layer taps on thumbs, having quick tap as well helps w/ repeating space/backspace
-&lt { quick_tap_ms = <200>; };
-
 #define BT(n) BT_SEL n
+
+#define JISKEY 0
+#define USKEY 1
+#define LOWER 2
+#define RAISE 3
+#define USRAI 4
+#define FUNC1 5
+#define FUNC2 6
+#define ADJUS 7
+
+
+
+#define __________	&trans
+#define XXXXXXXXXX	&none
+
+/* for JIS */
+#define LO_MUHE		&lt LOWER INT_MUHENKAN
+#define RA_HENK		&lt RAISE INT_HENKAN
+/* for US */
+#define LO_US		&lt LOWER LANG2
+#define RA_US		&lt USRAI LANG1
+
+#define ESC_ADJ 	&lt ADJUS ESC
+//#define ASCRN		&kp LA(PSCRN)
+#define ASCRN       &ASCRN_
+#define TEAM_EDIT	&kp LS(LG(X))
+
+
+#define J_KEY_MACRO(name,key)        ZMK_MACRO(name,    \
+            wait-ms = <50>;                             \
+            bindings =  <&macro_press &kp LSHFT>,       \
+                        <&macro_press &kp key>,         \
+                        <&macro_pause_for_release>,     \
+                        <&macro_release &kp key>,       \
+                        <&macro_release &kp LSHFT>;     \
+        )
+
+#define CTRL_KEY_MACRO(name,key)        ZMK_MACRO(name, \
+            wait-ms = <50>;                             \
+            bindings =  <&macro_press &kp LCTRL>,       \
+                        <&macro_press &kp key>,         \
+                        <&macro_pause_for_release>,     \
+                        <&macro_release &kp key>,       \
+                        <&macro_release &kp LCTRL>;     \
+        )
+
+#define ALT_KEY_MACRO(name,key)        ZMK_MACRO(name,  \
+            wait-ms = <50>;                             \
+            bindings =  <&macro_press &kp LALT>,        \
+                        <&macro_press &kp key>,         \
+                        <&macro_pause_for_release>,     \
+                        <&macro_release &kp key>,       \
+                        <&macro_release &kp LALT>;      \
+        )
+
+#define J_YEN		&kp INT_YEN		// ¥
+
+//#define J_EXCL		&kp LS(N1)		// !
+
+#define J_EXCL		&J_EXCL_		// !
+#define J_AT		&kp LBKT		// @
+//#define J_HASH		&kp LS(N3)		// #
+//#define J_DLLR		&kp LS(N4)		// $
+//#define J_PRCN		&kp LS(N5)		// %
+#define J_HASH		&J_HASH_		// #
+#define J_DLLR		&J_DLLR_		// $
+#define J_PRCN		&J_PRCN_		// %
+#define J_CARE		&kp EQUAL		// ^
+//#define J_AMPS		&kp LS(N6)		// &
+//#define J_ASTR		&kp LS(SQT)		// *
+//#define J_LPAR		&kp LS(N8)		// (
+//#define J_RPAR		&kp LS(N9)		// )
+#define J_AMPS		&J_AMPS_		// &
+#define J_ASTR		&J_ASTR_		// *
+#define J_LPAR		&J_LPAR_		// (
+#define J_RPAR		&J_RPAR_		// )
+
+//#define J_EQL		&kp LS(MINUS)	// =
+//#define J_LBRC		&kp LS(RBKT)	// {
+//#define J_RBRC		&kp LS(NUHS)	// }
+//#define J_SQT		&kp LS(N7)		// '
+#define J_EQL		&J_EQL_	// =
+#define J_LBRC		&J_LBRC_	// {
+#define J_RBRC		&J_RBRC_	// }
+#define J_SQT		&J_SQT_		// '
+#define J_BSLH		&kp INT1		// (backslash)
+//#define J_PIPE		&kp LS(INT3)	// |
+//#define J_PLUS		&kp LS(SEMI)	// +
+//#define J_UNDE		&kp LS(INT1)	// _
+#define J_PIPE		&J_PIPE_	// |
+#define J_PLUS		&J_PLUS_	// +
+#define J_UNDE		&J_UNDE_	// _
+#define J_LBKT		&kp RBKT		// [
+#define J_RBKT		&kp NUHS		// ]
+//#define J_DQT		&kp LS(N2)		// "
+#define J_DQT		&J_DQT_		// "
+
+#define J_COLN		&kp SQT			// :
+
+#define J_GRAV      &J_GRA_     // `
+#define J_TILD      &J_TIL_     // ~
+
+&lt {  // layer-tap config
+    flavor = "hold-preferred";
+    tapping-term-ms = <20>;
+    retro-tap;
+};
 
 / {
     chosen {
        zmk,matrix_transform =
-#ifdef TBLE_DUAL_2U
-                       &dual_2u_transform;
-#elif defined(TBLE_MIT)
                        &mit_transform;
-#else
-                       &ortho_transform;
-#endif
     };
 
-    macros {
-      ZMK_MACRO(thumbs_up,
-		wait-ms = <1>;
-		tap-ms = <5>;
-                bindings = <&kp PLUS &kp COLON &kp PLUS &kp N1 &kp COLON &kp RET>;
-		)
-    };
-    
-    tap_dances {
-    	shifty: shift_caps_word {
-		compatible = "zmk,behavior-tap-dance";
-		label = "TD_SHIFTY";
-		#binding-cells = <0>;
-		tapping-term-ms = <150>;
-		bindings = <&kp LSHFT>, <&caps_word>;
-	};
-    };
+    behaviors {
 
-// Conditional layer only when we have less thumb keys
-#ifdef TBLE_DUAL_2U
-    cond_layers {
-        compatible = "zmk,conditional-layers";
-	tri {
-	    if-layers = <NUM_L NAV_L>;
-	    then-layer = <SYM_L>;
+        scoln: mod_morph_scoln {
+            compatible = "zmk,behavior-mod-morph";
+            label = "MOD_MORPH_SCOLN";
+            #binding-cells = <0>;
+            bindings = <&kp SEMI>, <J_COLN>; // [sft ;] ─› [JP :]
+            mods = <(MOD_LSFT|MOD_RSFT)>;
         };
     };
-#endif
+    
+    macros {
+        J_KEY_MACRO(J_EXCL_, N1)
+        J_KEY_MACRO(J_HASH_, N3)
+        J_KEY_MACRO(J_DLLR_, N4)
+        J_KEY_MACRO(J_PRCN_, N5)
+        J_KEY_MACRO(J_AMPS_, N6)
+        J_KEY_MACRO(J_ASTR_, SQT)
+        J_KEY_MACRO(J_LPAR_, N8)
+        J_KEY_MACRO(J_RPAR_, N9)
+        J_KEY_MACRO(J_EQL_, MINUS)
+        J_KEY_MACRO(J_LBRC_, RBKT)
+        J_KEY_MACRO(J_RBRC_, NUHS)
+        J_KEY_MACRO(J_SQT_, N7)
+        J_KEY_MACRO(J_PIPE_, INT3)
+        J_KEY_MACRO(J_PLUS_, SEMI)
+        J_KEY_MACRO(J_UNDE_, INT1)
+        J_KEY_MACRO(J_DQT_, N2)
+        J_KEY_MACRO(J_GRA_, LBRC)
+        J_KEY_MACRO(J_TIL_, EQUAL)
+
+        CTRL_KEY_MACRO(CTRL_T, T)
+
+        ALT_KEY_MACRO(ASCRN_, PSCRN)
+
+        q_key: q_list_key {
+            label = "q_list_key";
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings =
+                <&kp N1>,
+                <&kp Q>,
+                <&kp A>,
+                <&kp Z>;
+        };
+        w_key: w_list_key {
+            label = "w_list_key";
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings =
+                <&kp N2>,
+                <&kp W>,
+                <&kp S>,
+                <&kp X>;
+        };
+        e_key: e_list_key {
+            label = "e_list_key";
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings =
+                <&kp N3>,
+                <&kp E>,
+                <&kp D>,
+                <&kp C>;
+        };
+        r_key: r_list_key {
+            label = "r_list_key";
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings =
+                <&macro_tap>,
+                <&kp N4>,
+                <&macro_tap>,
+                <&kp R>,
+                <&macro_tap>,
+                <&kp F>,
+                <&macro_tap>,
+                <&kp V>;
+        };
+        hex_key: hex_key {
+            label = "hex_key";
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings =
+                <&macro_tap>,
+                <&kp N0>,
+                <&macro_tap>,
+                <&kp X>;
+        };
+    };
 
     keymap {
         compatible = "zmk,keymap";
 
-        base_layer {
-            label = "Base";
+        default_layer {
+            // -----------------------------------------------------------------------------------------
+            // | TAB   |  Q   |  W   |  E   |  R   |  T   |   Y   |  U    |  I   |  O   |   P   | BSPC  |
+            // | ESC/AD|  A   |  S   |  D   |  F   |  G   |   H   |  J    |  K   |  L   |   ;   | ENTER |
+            // | SHIFT |  Z   |  X   |  C   |  V   |  B   |   N   |  M    |  ,   |  .   |  UP   | /     |
+            // | LCTL  | LGUI | LALT | FUNC2| LOWR |     SPACE    |  RAIS | FUNC1| LEFT | DOWN  | RIGHT |
+
             bindings = <
-#ifdef QWERTY_BASE
- &kp ESC    &kp Q      &kp W      &kp E       &kp R          &kp T          &kp Y            &kp U          &kp I       &kp O      &kp P         &kp BKSP
- &kp TAB    &kp A      &kp S      &kp D       &kp F          &kp G          &kp H            &kp J          &kp K       &kp L      &kp SEMI      &kp QUOT
- &kp LSHFT  &kp Z      &kp X      &kp C       &kp V          &kp B          &kp N            &kp M          &kp COMMA   &kp DOT    &kp FSLH      &kp RET
-#else
- &kp ESC    &kp Q      &kp W      &kp F       &kp P          &kp B          &kp J            &kp L          &kp U       &kp Y      &kp QUOT      &kp BKSP
- &kp TAB    &kp A      &kp R      &kp S       &kp T          &kp G          &kp M            &kp N          &kp E       &kp I      &kp O         &kp QUOT
- &kp LSHFT  &kp Z      &kp X      &kp C       &kp D          &kp V          &kp K            &kp H          &kp COMMA   &kp DOT    &kp SEMI      &kp RET
-#endif
-#ifdef TBLE_DUAL_2U
- &kp LCTRL  &kp LGUI   &kp LALT   &mo NAV_L         &shifty                        &kp SPACE                &mo NUM_L   &kp LALT   &kp RGUI      &kp RSHIFT
-#elif defined(TBLE_MIT)
- &kp LCTRL  &mo SYM_L   &kp LGUI  &kp LALT    &mo NAV_L          &kp SPACE                   &mo NUM_L      &kp LEFT    &kp UP     &kp DOWN      &kp RIGHT
-#else
- &kp LCTRL  &mo SYM_L   &kp LGUI  &kp LALT    &mo NAV_L      &kp SPACE      &kp RET          &mo NUM_L      &kp LEFT    &kp UP     &kp DOWN      &kp RIGHT
-#endif
+                &kp TAB    &kp Q      &kp W     &kp E     &kp R    &kp T      &kp Y      &kp U    &kp I      &kp O    &kp P     &kp BSPC
+                ESC_ADJ    &kp A      &kp S     &kp D     &kp F    &kp G      &kp H      &kp J    &kp K      &kp L    &scoln    &kp RET
+                &kp LSHFT  &kp Z      &kp X     &kp C     &kp V    &kp B      &kp N      &kp M    &kp COMMA  &kp DOT  &kp UP    &kp FSLH
+                &kp LCTRL  &kp LGUI   &kp LALT  &mo FUNC2 LO_MUHE  &kp SPACE             RA_HENK  &mo FUNC1  &kp LEFT &kp DOWN  &kp RIGHT
             >;
         };
 
-        nav_layer {
-            label = "Nav";
+        us_key {
+            // -----------------------------------------------------------------------------------------
+            // | TAB   |  Q   |  W   |  E   |  R   |  T   |   Y   |  U    |  I   |  O   |   P   | BSPC  |
+            // | ESC/AD|  A   |  S   |  D   |  F   |  G   |   H   |  J    |  K   |  L   |   ;   | ENTER |
+            // | SHIFT |  Z   |  X   |  C   |  V   |  B   |   N   |  M    |  ,   |  .   |  UP   | /     |
+            // | LCTL  | LGUI | LALT | FUNC2| LOWR |     SPACE    |  RAIS | FUNC1| LEFT | DOWN  | RIGHT |
+
             bindings = <
-&bt BT_CLR &trans     &trans     &trans      &trans          &trans       &trans     &trans         &trans      &trans     &trans     &kp DEL
-&trans     &trans     &trans     &trans      &trans          &trans       &trans     &kp LEFT       &kp DOWN    &kp UP     &kp RIGHT  &trans
-&trans     &bt BT(0)  &bt BT(1)  &bt BT(2)   &bt BT(3)       &bt BT(4)    &trans     &kp HOME       &kp PG_DN   &kp PG_UP  &kp END    &trans
-#ifdef TBLE_DUAL_2U
-&trans  &trans        &trans     &trans              &trans                    &trans       &trans         &trans &trans &trans
-#elif defined(TBLE_MIT)
-&trans  &trans        &trans     &trans      &trans                &trans             &trans      &trans   &trans &trans &trans
-#else
-&trans  &trans        &trans     &trans      &trans          &trans       &trans    &trans  &trans         &trans &trans &trans
-#endif
+                &kp TAB    &kp Q      &kp W     &kp E     &kp R    &kp T      &kp Y      &kp U    &kp I      &kp O    &kp P     &kp BSPC
+                ESC_ADJ    &kp A      &kp S     &kp D     &kp F    &kp G      &kp H      &kp J    &kp K      &kp L    &kp SEMI  &kp RET
+                &kp LSHFT  &kp Z      &kp X     &kp C     &kp V    &kp B      &kp N      &kp M    &kp COMMA  &kp DOT  &kp UP    &kp FSLH
+                &kp LCTRL  &kp LGUI   &kp LALT  &mo FUNC2 LO_US    &kp SPACE             RA_US    &mo FUNC1  &kp LEFT &kp DOWN  &kp RIGHT
             >;
         };
 
-        num_layer {
-            label = "Num";
+        lower {
             bindings = <
-&trans     &kp LBKT   &trans &trans &trans    &kp RBKT    &kp C_PREV    &kp N7     &kp N8      &kp N9       &trans     &trans
-&trans     &kp MINUS  &trans &trans &trans    &kp EQUAL   &kp C_NEXT    &kp N4     &kp N5      &kp N6       &trans     &trans
-&trans     &kp GRAVE  &trans &trans &trans    &kp BSLH    &trans        &kp N1     &kp N2      &kp N3       &trans     &trans
-#ifdef TBLE_DUAL_2U
-&trans  &trans       &trans     &kp N0              &trans                 &trans            &trans         &trans &trans &trans
-#elif defined(TBLE_MIT)
-&trans  &trans       &trans     &kp N0      &trans           &none            &trans        &kp DEL      &trans &trans &trans
-#else
-&trans  &trans       &trans     &kp N0      &trans    &none         &none     &kp ESC        &kp DEL      &trans &trans &trans
-#endif
+				&trans     &trans     &trans     &trans     &trans     &trans     &trans     &kp N7     &kp N8     &kp N9     &trans     &trans
+				&trans     &trans     ASCRN      &trans     &CTRL_T    &trans     &trans     &kp N4     &kp N5     &kp N6     &trans     &trans
+				&trans     &trans     &kp DEL    &kp BSPC   &kp RET    &trans     &trans     &kp N1     &kp N2     &kp N3     &trans     &trans
+                &trans     &trans     &trans     &trans     XXXXXXXXXX &trans                &kp N0     &kp DOT    &kp COMMA  &hex_key   &trans
             >;
         };
 
-        sym_layer {
-            label = "Sym";
+        raise {
             bindings = <
-&trans     &kp LBRC   &kp AMPS   &kp STAR    &kp LPAR     &kp RBRC     &trans     &trans    &trans       &trans       &trans     &bootloader
-&trans     &kp COLON  &kp DLLR   &kp PRCNT   &kp CARET    &kp PLUS     &trans     &trans    &trans       &trans       &trans     &trans
-&trans     &kp TILDE  &kp EXCL   &kp AT      &kp HASH     &kp PIPE     &trans     &trans    &trans       &trans       &trans     &trans
-#ifdef TBLE_DUAL_2U
-&trans &trans        &trans     &kp RPAR                &trans                    &trans       &trans         &trans &trans &trans
-#elif defined(TBLE_MIT)
-&trans &trans        &trans     &kp RPAR        &trans                &trans             &trans      &trans   &trans &trans &trans
-#else
-&trans &trans        &trans     &kp RPAR        &trans          &trans       &trans    &trans  &trans         &trans &trans &trans
-#endif
+				J_GRAV     J_EXCL     J_AT       J_HASH     J_DLLR     J_PRCN     J_CARE     J_AMPS     J_ASTR     J_LPAR     J_RPAR     J_BSLH
+				J_TILD     &trans     &trans     &trans     &trans     &trans     J_EQL      &kp MINUS  J_LBRC     J_RBRC     J_SQT      J_PIPE
+				&trans     &trans     &trans     &trans     &trans     &trans     J_PLUS     J_UNDE     J_LBKT     J_RBKT     J_DQT      &trans
+                &trans     &trans     &trans     &trans     &trans     &trans                XXXXXXXXXX &kp K_APP  &trans     &trans     &trans
             >;
         };
 
+        us_rai {
+            bindings = <
+				&kp GRAVE  &kp EXCL   &kp AT     &kp HASH   &kp DLLR   &kp PRCNT  &kp CARET  &kp AMPS   &kp ASTRK  &kp LPAR   &kp RPAR   &kp BSLH
+				&kp TILDE  &trans     &trans     &trans     &trans     &trans     &kp EQL    &kp MINUS  &kp LBRC   &kp RBRC   &kp SQT    &kp PIPE
+				&trans     &trans     &trans     &trans     &trans     &trans     &kp PLUS   &kp UNDER  &kp LBKT   &kp RBKT   &kp DQT    &trans
+                &trans     &trans     &trans     &trans     &trans     &trans                XXXXXXXXXX &trans     &trans     &trans     &trans
+            >;
+        };
 
+		func1 {
+			// -------------------------------------------------------------------------------------------------------------------------------------
+			// |          |          |          |          |          |          |          |          |          |          |          |          |
+			bindings = <
+				&trans     &trans     &trans     &trans     &trans     &trans     &trans     &trans     &trans     &trans     &trans     &kp DEL
+				&trans     &trans     &trans     &trans     &trans     &trans     &trans     &trans     &kp PG_UP  &kp PG_DN  &trans     &trans
+				&trans     &trans     &trans     &trans     &trans     &trans     &trans     &trans     &kp HOME   &kp END    &trans     &trans
+                &trans     &trans     &trans     &trans     &trans     &trans                &trans     XXXXXXXXXX &trans     &trans     &trans
+			>;
+		};
+
+		func2 {
+			// -------------------------------------------------------------------------------------------------------------------------------------
+			// |          |          |          |          |          |          |          |          |          |          |          |          |
+			bindings = <
+				&trans     &kp F1     &kp F2     &kp F3     &kp F4     &kp F5     &trans     &trans     &trans     &trans     &trans     &trans
+				&trans     &kp F6     &kp F7     &kp F8     &kp F9     &kp F10    &trans     &trans     &trans     &trans     &trans     &trans
+				&trans     &kp F11    &kp F12    &trans     &trans     &trans     &trans     &trans     &trans     &trans     &trans     &trans
+                &trans     &trans     &trans     XXXXXXXXXX &trans     &trans                &trans     &trans     &trans     &trans     &trans
+			>;
+		};
+
+        adjust {
+            bindings = <
+            // -------------------------------------------------------------------------------------------------------------------------------------
+			// |          |          |          |          |          |          |          |          |          |          |          |          |
+
+                &trans     &q_key     &w_key     &e_key     &r_key     &trans     &trans     &to USKEY  &trans     &trans     &trans     &bootloader
+                &trans     &bt BT(0)  &bt BT(1)  &bt BT(2)  &bt BT(3)  &bt BT(4)  &bt BT_CLR &to JISKEY &trans     &trans     &trans     &sys_reset
+                &trans     &out OUT_USB &out OUT_BLE &trans &trans     &trans     &trans     &trans     &trans     &trans     &trans     &trans
+                &trans     &trans     &trans     &trans     &trans     &trans                &trans     &trans     &trans     &trans     &trans
+            >;
+        };
     };
 };
-
