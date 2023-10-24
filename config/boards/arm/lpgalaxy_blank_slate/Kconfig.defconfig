@@ -7,7 +7,7 @@ config BOARD
 	default "lpgalaxy_blank_slate"
 
 config ZMK_KEYBOARD_NAME
-	default "Blank Slate Gridiron"
+	default "Gridiron BLE"
 
 if USB
 
