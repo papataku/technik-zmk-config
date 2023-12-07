@@ -70,7 +70,8 @@
 //#define J_EXCL		&kp LS(N1)		// !
 
 #define J_EXCL		&J_EXCL_		// !
-#define J_AT		&kp LBKT		// @
+//#define J_AT		&kp LBKT		// @
+#define J_AT		&J_AT_   		// @
 //#define J_HASH		&kp LS(N3)		// #
 //#define J_DLLR		&kp LS(N4)		// $
 //#define J_PRCN		&kp LS(N5)		// %
@@ -154,6 +155,14 @@
         J_KEY_MACRO(J_DQT_, N2)
         J_KEY_MACRO(J_GRA_, LBRC)
         J_KEY_MACRO(J_TIL_, EQUAL)
+
+        ZMK_MACRO(J_AT_,    \
+            wait-ms = <50>;                             \
+            bindings =  <&macro_tap &kp INT_MUHENKAN>,  \
+                        <&macro_press &kp LBKT>,        \
+                        <&macro_pause_for_release>,     \
+                        <&macro_release &kp LBKT>;       \
+        )
 
         CTRL_KEY_MACRO(CTRL_T, T)
 
