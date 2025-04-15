@@ -122,7 +122,7 @@
 / {
     chosen {
        zmk,matrix_transform =
-                       &mit_transform;
+                       &default_transform;
     };
 
     behaviors {

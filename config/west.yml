@@ -1,11 +1,18 @@
 manifest:
   remotes:
-    - name: petejohanson
-      url-base: https://github.com/petejohanson
+    - name: zmkfirmware
+      url-base: https://github.com/zmkfirmware
+    - name: sekigon-gonnoc
+      url-base: https://github.com/sekigon-gonnoc
+    # Additional modules containing boards/shields/custom code can be listed here as well
+    # See https://docs.zephyrproject.org/3.2.0/develop/west/manifest.html#projects
   projects:
     - name: zmk
-      remote: petejohanson
-      revision: features/soft-off-take-2
+      remote: zmkfirmware
+      revision: main
       import: app/west.yml
+    - name: zmk-feature-status-led
+      remote: sekigon-gonnoc
+      revision: main
   self:
     path: config

@@ -1,13 +1,13 @@
 # Copyright (c) 2020 Pete Johanson
 # SPDX-License-Identifier: MIT
 
-if BOARD_LPGALAXY_BLANK_SLATE
+if BOARD_TECHNIK
 
 config BOARD
-	default "lpgalaxy_blank_slate"
+	default "boardsource_Technik"
 
 config ZMK_KEYBOARD_NAME
-	default "Planck BLE"
+	default "Technik BLE"
 
 if USB
 
@@ -28,4 +28,4 @@ config ZMK_BLE
 config ZMK_USB
 	default y
 
-endif # BOARD_LPGALAXY_BLANK_SLATE
+endif # BOARD_TECHNIK
