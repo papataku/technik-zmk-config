@@ -184,3 +184,35 @@
 		};
 	};
 };
+
+/ {
+    chosen {
+        zmk,battery = &vbatt;
+    };
+
+    vbatt: vbatt {
+        compatible = "zmk,battery-voltage-divider";
+        io-channels = <&adc 7>;
+        power-gpios = <&gpio0 14 (GPIO_OPEN_DRAIN | GPIO_ACTIVE_LOW)>;
+        output-ohms = <510000>;
+        full-ohms = <(1000000 + 510000)>;
+    };
+};
+
+/ {
+    // Existing keyboard config...
+
+    // Add a LED node here if not already defined by the board
+    leds {
+        compatible = "gpio-leds";
+        status_led: status_led {
+            gpios = <&gpio0 4 GPIO_ACTIVE_LOW>;
+            label = "Status LED";
+        };
+    };
+    
+    status_led_device: status_led_device {
+        compatible = "zmk,status-led";
+        led = <&status_led>;
+    };
+};

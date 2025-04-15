@@ -28,4 +28,7 @@ config ZMK_BLE
 config ZMK_USB
 	default y
 
+config ZMK_STATUS_LED
+    default y
+
 endif # BOARD_TECHNIK
