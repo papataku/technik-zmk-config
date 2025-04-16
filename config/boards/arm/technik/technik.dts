@@ -199,6 +199,7 @@
     };
 };
 
+#if 0
 / {
     // Existing keyboard config...
 
@@ -214,5 +215,28 @@
     status_led_device: status_led_device {
         compatible = "zmk,status-led";
         led = <&status_led>;
+    };
+};
+#endif
+
+/ {
+    aliases {
+        led-red = &led0;
+        led-green = &led1;
+        led-blue = &led2;
+    };
+
+    leds {
+        compatible = "gpio-leds";
+        status = "okay";
+        led0: led_0 {
+            gpios = <&gpio0 27 GPIO_ACTIVE_LOW>;  // red LED, connected to P0.27
+        };
+        led1: led_1 {
+            gpios = <&gpio0 26 GPIO_ACTIVE_LOW>;  // green LED, connected to P0.26
+        };
+        led2: led_2 {
+            gpios = <&gpio0 4 GPIO_ACTIVE_LOW>;  // blue LED, connected to P0.04
+        };
     };
 };
