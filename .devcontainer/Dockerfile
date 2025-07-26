@@ -5,5 +5,5 @@ RUN apt-get update && \
     apt-get install -y git-lfs && \
     git lfs install
 
-COPY .bashrc tmp
-RUN mv /tmp/.bashrc ~/.bashrc
+# .bashrc を正しく配置
+COPY .bashrc /root/.bashrc
