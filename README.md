@@ -23,3 +23,9 @@ manifest:
   self:
     path: config
 ```
+
+build command
+
+```
+west build -s zmk/app -d build -b technik
+```
