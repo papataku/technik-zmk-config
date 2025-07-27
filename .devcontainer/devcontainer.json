@@ -23,6 +23,5 @@
     }
   },
   "forwardPorts": [3000],
-
-  "postCreateCommand": "rm -rf .west config/.west && west init ./config && west update && west zephyr-export"
+  "postCreateCommand": "rm -rf .west config/.west config/zephyr && west init ./config && west update && west zephyr-export"
 }
